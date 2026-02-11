@@ -18,7 +18,6 @@ const categories: EffectCategory[] = ['distort', 'color', 'retro', 'art', 'geo',
 export default function Panel({ stack, addEffect, updateParam, toggle, remove }: ControlPanelProps): JSX.Element {
   const [activeTab, setActiveTab] = useState<EffectCategory>('distort')
 
-  // DnD state
   const [position, setPosition] = useState({ x: 20, y: 20 })
   const dragging = useRef(false)
   const offset = useRef({ x: 0, y: 0 })

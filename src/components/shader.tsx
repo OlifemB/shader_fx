@@ -59,13 +59,11 @@ export default function ShaderQuad({ stack }: { stack: EffectInstance[] }) {
       vec3 color = texture2D(u_texture, uv).rgb;
     `
 
-    // Active effects only
     const activeStack = stack.filter(eff => eff.enabled)
     activeStack.forEach(eff => {
       Object.entries(eff.params).forEach(([p, [val]]) => {
         const uName = `u_${eff.type}${capitalize(p)}_${eff.id}`
         uniformsDecl += `uniform float ${uName};\n`
-        // Add if missing (persistent!)
         if (!(uName in mat.uniforms)) {
           mat.uniforms[uName] = { value: val }
         }
@@ -73,7 +71,6 @@ export default function ShaderQuad({ stack }: { stack: EffectInstance[] }) {
       mainBody += `{ ${eff.chunk(eff.id)} }`
     })
 
-    // Cleanup unused uniforms (optional, for memory)
     Object.keys(mat.uniforms).forEach(key => {
       if (key.startsWith('u_') && key !== 'u_texture' && key !== 'u_time' && key !== 'u_mouse') {
         const isUsed = activeStack.some(eff =>

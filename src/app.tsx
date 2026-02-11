@@ -29,7 +29,7 @@ export default function App(): JSX.Element {
           ...e,
           params: {
             ...e.params,
-            [param]: [value, e.params[param][1], e.params[param][2]], // создаём новый массив
+            [param]: [value, e.params[param][1], e.params[param][2]],
           },
         }
       })
