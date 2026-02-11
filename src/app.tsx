@@ -5,12 +5,14 @@ import Panel from './components/panel/panel'
 import { EFFECTS_LIB } from './effects'
 import ShaderQuad, { type EffectInstance } from '@/components/shader'
 
+type EffectType = keyof typeof EFFECTS_LIB
+
 export default function App(): JSX.Element {
   const [stack, setStack] = useState<EffectInstance[]>([])
 
-  const addEffect = (type: string) => {
+  const addEffect = (type: EffectType) => {
     const id = Math.random().toString(36).slice(2, 7)
-    const original = EFFECTS_LIB[type]
+    const original = EFFECTS_LIB[type] // теперь TS понимает, что type точно есть в EFFECTS_LIB
     const instance: EffectInstance = {
       ...original,
       id,

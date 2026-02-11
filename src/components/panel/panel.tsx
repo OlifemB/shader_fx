@@ -12,7 +12,7 @@ export type EffectCategory = 'distort' | 'color' | 'retro' | 'art' | 'geo' | 'te
 
 interface ControlPanelProps {
   stack: EffectInstance[]
-  setStack: () => void
+  setStack: (stack: EffectInstance[]) => void
   addEffect: (type: EffectType) => void
   updateParam: (id: string, param: string, value: number) => void
   toggle: (id: string, enabled: boolean) => void
