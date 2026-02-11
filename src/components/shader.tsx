@@ -1,10 +1,10 @@
-// src/components/shader.tsx
+/// src/components/shader.tsx
 import * as THREE from 'three'
 import { useTexture } from '@react-three/drei'
-import { TEXTURE } from '@/consts.ts'
-import { useEffect, useMemo, useRef } from 'react'
-import { useFrame } from '@react-three/fiber'
-import { capitalize } from '@/utils.ts'
+import { TEXTURE } from '@/assets/consts.ts'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useFrame, useThree } from '@react-three/fiber'
+import { capitalize } from '@/assets/utils.ts'
 
 type EffectParam = [number, number, number]
 export interface EffectInstance {
@@ -20,11 +20,23 @@ export interface EffectInstance {
 export default function ShaderQuad({ stack }: { stack: EffectInstance[] }) {
   const texture = useTexture(TEXTURE)
   const materialRef = useRef<THREE.ShaderMaterial>(null)
+  const { size } = useThree()
+  const [mouse, setMouse] = useState([0.5, 0.5])
+
+  // --- отслеживаем мышь и нормализуем координаты [0,1] ---
+  useEffect(() => {
+    const handleMouse = (e: MouseEvent) => {
+      setMouse([e.clientX / size.width, 1 - e.clientY / size.height])
+    }
+    window.addEventListener('mousemove', handleMouse)
+    return () => window.removeEventListener('mousemove', handleMouse)
+  }, [size])
+
   const baseUniforms = useMemo(
     () => ({
       u_texture: { value: texture },
       u_time: { value: 0 },
-      u_mouse: { value: new THREE.Vector2() },
+      u_mouse: { value: new THREE.Vector2(mouse[0], mouse[1]) },
     }),
     [texture]
   )
@@ -33,9 +45,10 @@ export default function ShaderQuad({ stack }: { stack: EffectInstance[] }) {
     const mat = materialRef.current
     if (!mat) return
     mat.uniforms.u_time.value = state.clock.elapsedTime
-    mat.uniforms.u_mouse.value.copy(state.pointer)
+    mat.uniforms.u_mouse.value.set(mouse[0], mouse[1])
   })
 
+  // --- ключ для пересборки шейдера ---
   const rebuildKey = useMemo(() => {
     return stack
       .map(eff => `${eff.id}-${eff.enabled ? 'on' : 'off'}-${Object.keys(eff.params).sort().join(',')}`)
@@ -43,6 +56,7 @@ export default function ShaderQuad({ stack }: { stack: EffectInstance[] }) {
       .join('|')
   }, [stack])
 
+  // --- собираем шейдер ---
   useEffect(() => {
     const mat = materialRef.current
     if (!mat || !mat.uniforms) return
@@ -71,14 +85,13 @@ export default function ShaderQuad({ stack }: { stack: EffectInstance[] }) {
       mainBody += `{ ${eff.chunk(eff.id)} }`
     })
 
+    // удаляем неиспользуемые uniform
     Object.keys(mat.uniforms).forEach(key => {
       if (key.startsWith('u_') && key !== 'u_texture' && key !== 'u_time' && key !== 'u_mouse') {
         const isUsed = activeStack.some(eff =>
           Object.keys(eff.params).some(p => `u_${eff.type}${capitalize(p)}_${eff.id}` === key)
         )
-        if (!isUsed) {
-          delete mat.uniforms[key]
-        }
+        if (!isUsed) delete mat.uniforms[key]
       }
     })
 
@@ -94,6 +107,7 @@ export default function ShaderQuad({ stack }: { stack: EffectInstance[] }) {
     mat.needsUpdate = true
   }, [rebuildKey, texture])
 
+  // --- обновляем значения uniform при изменении stack ---
   useEffect(() => {
     const mat = materialRef.current
     if (!mat || !mat.uniforms) return
@@ -103,9 +117,7 @@ export default function ShaderQuad({ stack }: { stack: EffectInstance[] }) {
       Object.entries(eff.params).forEach(([p, [val]]) => {
         const uName = `u_${eff.type}${capitalize(p)}_${eff.id}`
         const uniform = mat.uniforms[uName]
-        if (uniform) {
-          uniform.value = val
-        }
+        if (uniform) uniform.value = val
       })
     })
   }, [stack])

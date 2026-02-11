@@ -1,9 +1,9 @@
 import { useState, type JSX } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrthographicCamera } from '@react-three/drei'
-import Panel from './components/panel/panel'
-import { EFFECTS_LIB } from './effects'
-import ShaderQuad, { type EffectInstance } from '@/components/shader'
+import Panel from './panel/panel.tsx'
+import { EFFECTS_LIB } from '@/shaders'
+import ShaderQuad, { type EffectInstance } from '@/components/shader.tsx'
 
 type EffectType = keyof typeof EFFECTS_LIB
 
