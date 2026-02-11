@@ -1,0 +1,10 @@
+node_modules
+dist
+build
+public
+package.json
+package-lock.json
+yarn.lock
+*.min.js
+*.config.js
+*.d.ts
