@@ -1,0 +1,1 @@
+export const TEXTURE = 'https://png.pngtree.com/background/20250523/original/pngtree-a-dark-foggy-forest-with-tall-trees-creating-an-eerie-and-picture-image_16540533.jpg'
