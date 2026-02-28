@@ -1,5 +1,5 @@
 import { type JSX, useState, useRef } from 'react'
-import { EFFECTS_LIB } from '../../shaders'
+import { EFFECTS_LIB } from '@/shaders'
 import type { EffectInstance } from '@/components/shader.tsx'
 import PanelHeader from './header'
 import TabsNav from './tabs'
