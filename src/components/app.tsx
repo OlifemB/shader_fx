@@ -9,10 +9,12 @@ type EffectType = keyof typeof EFFECTS_LIB
 
 export default function App(): JSX.Element {
   const [stack, setStack] = useState<EffectInstance[]>([])
+  const [imageUrl, setImageUrl] = useState<string>('https://picsum.photos/1024/1024')
 
   const addEffect = (type: EffectType) => {
     const id = Math.random().toString(36).slice(2, 7)
-    const original = EFFECTS_LIB[type] // теперь TS понимает, что type точно есть в EFFECTS_LIB
+    const original = EFFECTS_LIB[type]
+
     const instance: EffectInstance = {
       ...original,
       id,
@@ -20,21 +22,23 @@ export default function App(): JSX.Element {
       enabled: true,
       params: JSON.parse(JSON.stringify(original.params)),
     }
+
     setStack(prev => [...prev, instance])
   }
 
   const updateParam = (id: string, param: string, value: number) => {
     setStack(prev =>
-      prev.map(e => {
-        if (e.id !== id) return e
-        return {
-          ...e,
-          params: {
-            ...e.params,
-            [param]: [value, e.params[param][1], e.params[param][2]],
-          },
-        }
-      })
+      prev.map(e =>
+        e.id === id
+          ? {
+              ...e,
+              params: {
+                ...e.params,
+                [param]: [value, e.params[param][1], e.params[param][2]],
+              },
+            }
+          : e
+      )
     )
   }
 
@@ -53,7 +57,10 @@ export default function App(): JSX.Element {
           makeDefault
           position={[0, 0, 1]}
         />
-        <ShaderQuad stack={stack} />
+        <ShaderQuad
+          stack={stack}
+          imageUrl={imageUrl}
+        />
       </Canvas>
 
       <Panel
@@ -63,6 +70,7 @@ export default function App(): JSX.Element {
         updateParam={updateParam}
         toggle={toggle}
         remove={remove}
+        setImageUrl={setImageUrl}
       />
     </>
   )

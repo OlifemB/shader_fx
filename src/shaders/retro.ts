@@ -1,5 +1,5 @@
+// src/shaders/retro.ts
 export const RETRO = {
-  // --- RETRO ---
   vhs: {
     cat: 'retro',
     name: 'VHS статика',

@@ -1,3 +1,4 @@
+// src/components/panel/header.tsx
 import { type JSX } from 'react'
 import * as React from 'react'
 

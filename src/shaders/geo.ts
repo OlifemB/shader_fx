@@ -1,5 +1,5 @@
+// src/shaders/geo.ts
 export const GEO = {
-  // --- GEO ---
   mirror: {
     cat: 'geo',
     name: 'Зеркало X/Y',
@@ -8,7 +8,7 @@ export const GEO = {
       if(u_mirrorMode_${id} < 1.0) { if(uv.x > 0.5) uv.x = 1.0 - uv.x; }
       else if(u_mirrorMode_${id} < 2.0) { if(uv.y > 0.5) uv.y = 1.0 - uv.y; }
       else { if(uv.x > 0.5) uv.x = 1.0 - uv.x; if(uv.y > 0.5) uv.y = 1.0 - uv.y; }
-      color = texture2D(u_texture, uv).rgb;  // Фикс: обновляем color
+      color = texture2D(u_texture, uv).rgb;
     `,
   },
   kaleido: {
@@ -19,7 +19,7 @@ export const GEO = {
       vec2 k = uv - 0.5; float r = length(k); float a = atan(k.y, k.x);
       float s = 6.28 / u_kaleidoSeg_${id}; a = mod(a, s); if(a > s*0.5) a = s - a;
       uv = 0.5 + vec2(cos(a), sin(a)) * r;
-      color = texture2D(u_texture, uv).rgb;  // Фикс: обновляем color
+      color = texture2D(u_texture, uv).rgb;
     `,
   },
   zoom: {
@@ -28,7 +28,7 @@ export const GEO = {
     params: { val: [1, 0.5, 3] },
     chunk: (id: string) => `
       uv = (uv - 0.5) / u_zoomVal_${id} + 0.5;
-      color = texture2D(u_texture, uv).rgb;  // Фикс: обновляем color
+      color = texture2D(u_texture, uv).rgb;
     `,
   },
   rotate: {
@@ -41,7 +41,7 @@ export const GEO = {
       uv -= piv;
       uv = mat2(cos(ang), -sin(ang), sin(ang), cos(ang)) * uv;
       uv += piv;
-      color = texture2D(u_texture, uv).rgb;  // Фикс: обновляем color
+      color = texture2D(u_texture, uv).rgb;
     `,
   },
 }

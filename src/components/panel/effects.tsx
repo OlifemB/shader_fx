@@ -1,3 +1,4 @@
+// src/components/panel/effects.tsx
 import { type JSX } from 'react'
 import { EFFECTS_LIB } from '../../shaders'
 import type { EffectType } from './panel'

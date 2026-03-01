@@ -1,3 +1,4 @@
+// src/components/panel/tabs.tsx
 import { type JSX } from 'react'
 import type { EffectCategory } from './panel'
 

@@ -1,11 +1,12 @@
-import { type JSX, useState, useRef } from 'react'
-import { EFFECTS_LIB } from '@/shaders'
+// src/components/panel/panel.tsx
+import React, { type JSX, useState, useRef } from 'react'
 import type { EffectInstance } from '@/components/shader.tsx'
-import PanelHeader from './header'
-import TabsNav from './tabs'
-import AddEffectsSection from './effects.tsx'
-import EffectStack from './stack'
-import * as React from 'react'
+import { EFFECTS_LIB } from '@/shaders'
+import Header from './header'
+import Navigation from './tabs'
+import List from './effects.tsx'
+import Stack from './stack'
+import Upload from '@/components/panel/upload.tsx'
 
 export type EffectType = keyof typeof EFFECTS_LIB
 export type EffectCategory = 'distort' | 'color' | 'retro' | 'art' | 'geo' | 'tech' | 'mouse'
@@ -57,20 +58,21 @@ export default function Panel({
       className="fixed w-[400px] max-h-[90vh] flex flex-col bg-[rgba(15,16,22,0.9)] backdrop-blur-[30px] border border-white/10 rounded-2xl z-50 overflow-y-hidden"
       style={{ left: position.x, top: position.y, '--accent': '#00ffa3' } as React.CSSProperties}
     >
-      <PanelHeader
+      <Header
         onMouseDown={handleMouseDown}
         title="ShaderFX"
       />
-      <TabsNav
+      <Upload />
+      <Navigation
         categories={categories}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
-      <AddEffectsSection
+      <List
         activeTab={activeTab}
         addEffect={addEffect}
       />
-      <EffectStack
+      <Stack
         stack={stack}
         setStack={setStack}
         updateParam={updateParam}

@@ -1,3 +1,4 @@
+// src/shaders/color.ts
 export const COLOR = {
   exposure: {
     cat: 'color',

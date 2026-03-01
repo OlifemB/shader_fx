@@ -1,5 +1,5 @@
+// src/shaders/mouse.ts
 export const MOUSE = {
-  // --- MOUSE ---
   bulge: {
     cat: 'mouse',
     name: 'Выпуклость',
@@ -26,7 +26,7 @@ export const MOUSE = {
       vec2 m = u_mouse;
       float dist = distance(uv, m);
       uv += normalize(uv - m) * sin(dist * u_rippleMouseFrequency_${id} - u_time) * u_rippleMouseAmplitude_${id} * smoothstep(0.5, 0.0, dist);
-      color = texture2D(u_texture, uv).rgb;  // Фикс: обновляем color
+      color = texture2D(u_texture, uv).rgb;
     `,
   },
   magnifyMouse: {
@@ -39,7 +39,7 @@ export const MOUSE = {
       if (d < u_magnifyMouseRadius_${id}) {
         uv = m + (uv - m) / u_magnifyMouseZoom_${id};
       }
-      color = texture2D(u_texture, uv).rgb;  // Фикс: обновляем color
+      color = texture2D(u_texture, uv).rgb;
     `,
   },
   colorShiftMouse: {
@@ -86,7 +86,7 @@ export const MOUSE = {
         float angle = u_vortexMouseStrength_${id} * (1.0 - d / u_vortexMouseRadius_${id}) / d;
         uv = m + mat2(cos(angle), -sin(angle), sin(angle), cos(angle)) * dir;
       }
-      color = texture2D(u_texture, uv).rgb;  // Фикс: обновляем color
+      color = texture2D(u_texture, uv).rgb;
     `,
   },
   invertMouse: {
@@ -112,7 +112,7 @@ export const MOUSE = {
         float pixelSize = u_pixelateMouseRes_${id} * (d / u_pixelateMouseRadius_${id});
         uv = floor(uv * pixelSize) / pixelSize;
       }
-      color = texture2D(u_texture, uv).rgb;  // Фикс: обновляем color
+      color = texture2D(u_texture, uv).rgb;
     `,
   },
   glowMouse: {
@@ -136,7 +136,7 @@ export const MOUSE = {
       if(dist < u_mouse_waveRadius_${id}) {
         uv += normalize(d) * sin(u_time * u_mouse_waveSpeed_${id} - dist*10.0) * u_mouse_wavePower_${id};
       }
-      color = texture2D(u_texture, uv).rgb;  // Фикс: обновляем color
+      color = texture2D(u_texture, uv).rgb;
     `,
   },
   mouse_pinch: {
@@ -147,7 +147,7 @@ export const MOUSE = {
       vec2 d = uv - u_mouse;
       float dist = length(d);
       if(dist < u_mouse_pinchRadius_${id}) uv -= d * (1.0 - dist / u_mouse_pinchRadius_${id}) * u_mouse_pinchStrength_${id};
-      color = texture2D(u_texture, uv).rgb;  // Фикс: обновляем color
+      color = texture2D(u_texture, uv).rgb;
     `,
   },
   mouse_twist: {
@@ -161,7 +161,7 @@ export const MOUSE = {
         float a = atan(d.y, d.x) + (1.0 - dist/u_mouse_twistRadius_${id}) * u_mouse_twistAngle_${id};
         uv = u_mouse + vec2(cos(a), sin(a)) * dist;
       }
-      color = texture2D(u_texture, uv).rgb;  // Фикс: обновляем color
+      color = texture2D(u_texture, uv).rgb;
     `,
   },
   mouse_swirl: {
@@ -178,7 +178,7 @@ export const MOUSE = {
           sin(a) * d.x + cos(a) * d.y
         );
       }
-      color = texture2D(u_texture, uv).rgb;  // Фикс: обновляем color
+      color = texture2D(u_texture, uv).rgb;
     `,
   },
   mouse_pull: {
@@ -189,7 +189,7 @@ export const MOUSE = {
       vec2 d = u_mouse - uv;
       float dist = length(d);
       if(dist < u_mouse_pullRadius_${id}) uv += d * (1.0 - dist / u_mouse_pullRadius_${id}) * u_mouse_pullStrength_${id};
-      color = texture2D(u_texture, uv).rgb;  // Фикс: обновляем color
+      color = texture2D(u_texture, uv).rgb;
     `,
   },
   mouse_push: {
@@ -200,7 +200,7 @@ export const MOUSE = {
       vec2 d = uv - u_mouse;
       float dist = length(d);
       if(dist < u_mouse_pushRadius_${id}) uv += normalize(d) * (1.0 - dist / u_mouse_pushRadius_${id}) * u_mouse_pushStrength_${id};
-      color = texture2D(u_texture, uv).rgb;  // Фикс: обновляем color
+      color = texture2D(u_texture, uv).rgb;
     `,
   },
   mouse_glitch: {
@@ -210,7 +210,7 @@ export const MOUSE = {
     chunk: (id: string) => `
       float d = distance(uv, u_mouse);
       if(d < u_mouse_glitchRadius_${id}) uv += vec2(hash(vec2(u_time*10.0, d)) - 0.5) * u_mouse_glitchAmt_${id};
-      color = texture2D(u_texture, uv).rgb;  // Фикс: обновляем color
+      color = texture2D(u_texture, uv).rgb;
     `,
   },
   mouse_fisheye: {
@@ -221,7 +221,7 @@ export const MOUSE = {
       vec2 d = uv - u_mouse;
       float dist = length(d);
       if(dist < u_mouse_fisheyeRadius_${id}) uv = u_mouse + normalize(d) * pow(dist, u_mouse_fisheyePower_${id});
-      color = texture2D(u_texture, uv).rgb;  // Фикс: обновляем color
+      color = texture2D(u_texture, uv).rgb;
     `,
   },
   mouse_wave_color: {
@@ -258,7 +258,7 @@ export const MOUSE = {
     chunk: (id: string) => `
       float dist = distance(uv,u_mouse);
       if(dist < u_mouse_zoomRadius_${id}) uv = (uv-u_mouse)/u_mouse_zoomVal_${id}+u_mouse;
-      color = texture2D(u_texture, uv).rgb;  // Фикс: обновляем color
+      color = texture2D(u_texture, uv).rgb;
     `,
   },
   mouse_distort: {
@@ -269,7 +269,7 @@ export const MOUSE = {
       vec2 d = uv - u_mouse;
       float dist = length(d);
       if(dist < u_mouse_distortRadius_${id}) uv += normalize(d) * (u_mouse_distortRadius_${id}-dist) * u_mouse_distortStrength_${id};
-      color = texture2D(u_texture, uv).rgb;  // Фикс: обновляем color
+      color = texture2D(u_texture, uv).rgb;
     `,
   },
   mouse_spin: {
@@ -283,7 +283,7 @@ export const MOUSE = {
         float a = u_time * u_mouse_spinSpeed_${id} * (1.0-dist/u_mouse_spinRadius_${id});
         uv = u_mouse + vec2(cos(a), sin(a)) * dist;
       }
-      color = texture2D(u_texture, uv).rgb;  // Фикс: обновляем color
+      color = texture2D(u_texture, uv).rgb;
     `,
   },
   mouse_shake: {
@@ -293,7 +293,7 @@ export const MOUSE = {
     chunk: (id: string) => `
       float d = distance(uv,u_mouse);
       if(d < u_mouse_shakeRadius_${id}) uv += vec2(hash(vec2(u_time)) - 0.5, hash(vec2(u_time+1.0)) - 0.5) * u_mouse_shakeAmp_${id};
-      color = texture2D(u_texture, uv).rgb;  // Фикс: обновляем color
+      color = texture2D(u_texture, uv).rgb;
     `,
   },
 }

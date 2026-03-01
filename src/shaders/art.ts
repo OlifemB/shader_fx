@@ -1,5 +1,5 @@
+// src/shaders/art.ts
 export const ART = {
-  // --- ART ---
   ascii: {
     cat: 'art',
     name: 'ASCII Символы',

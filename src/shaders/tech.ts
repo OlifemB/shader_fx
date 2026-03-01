@@ -1,3 +1,4 @@
+// src/shaders/tech.ts
 export const TECH = {
   glitch_rgb: {
     cat: 'tech',

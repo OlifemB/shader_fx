@@ -1,12 +1,11 @@
-/// src/components/shader.tsx
 import * as THREE from 'three'
-import { useTexture } from '@react-three/drei'
-import { TEXTURE } from '@/assets/consts.ts'
+import { useLoader } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { capitalize } from '@/assets/utils.ts'
 
 type EffectParam = [number, number, number]
+
 export interface EffectInstance {
   id: string
   type: string
@@ -17,13 +16,13 @@ export interface EffectInstance {
   chunk: (id: string) => string
 }
 
-export default function ShaderQuad({ stack }: { stack: EffectInstance[] }) {
-  const texture = useTexture(TEXTURE)
+export default function ShaderQuad({ stack, imageUrl }: { stack: EffectInstance[]; imageUrl: string }) {
+  const texture = useLoader(THREE.TextureLoader, imageUrl)
   const materialRef = useRef<THREE.ShaderMaterial>(null)
   const { size } = useThree()
   const [mouse, setMouse] = useState([0.5, 0.5])
 
-  // --- отслеживаем мышь и нормализуем координаты [0,1] ---
+  // мышь
   useEffect(() => {
     const handleMouse = (e: MouseEvent) => {
       setMouse([e.clientX / size.width, 1 - e.clientY / size.height])
@@ -48,7 +47,6 @@ export default function ShaderQuad({ stack }: { stack: EffectInstance[] }) {
     mat.uniforms.u_mouse.value.set(mouse[0], mouse[1])
   })
 
-  // --- ключ для пересборки шейдера ---
   const rebuildKey = useMemo(() => {
     return stack
       .map(eff => `${eff.id}-${eff.enabled ? 'on' : 'off'}-${Object.keys(eff.params).sort().join(',')}`)
@@ -56,7 +54,6 @@ export default function ShaderQuad({ stack }: { stack: EffectInstance[] }) {
       .join('|')
   }, [stack])
 
-  // --- собираем шейдер ---
   useEffect(() => {
     const mat = materialRef.current
     if (!mat || !mat.uniforms) return
@@ -68,12 +65,14 @@ export default function ShaderQuad({ stack }: { stack: EffectInstance[] }) {
       uniform float u_time;
       uniform vec2 u_mouse;
     `
+
     let mainBody = `
       vec2 uv = vUv;
       vec3 color = texture2D(u_texture, uv).rgb;
     `
 
     const activeStack = stack.filter(eff => eff.enabled)
+
     activeStack.forEach(eff => {
       Object.entries(eff.params).forEach(([p, [val]]) => {
         const uName = `u_${eff.type}${capitalize(p)}_${eff.id}`
@@ -85,7 +84,6 @@ export default function ShaderQuad({ stack }: { stack: EffectInstance[] }) {
       mainBody += `{ ${eff.chunk(eff.id)} }`
     })
 
-    // удаляем неиспользуемые uniform
     Object.keys(mat.uniforms).forEach(key => {
       if (key.startsWith('u_') && key !== 'u_texture' && key !== 'u_time' && key !== 'u_mouse') {
         const isUsed = activeStack.some(eff =>
@@ -98,16 +96,20 @@ export default function ShaderQuad({ stack }: { stack: EffectInstance[] }) {
     mat.fragmentShader = `
       ${uniformsDecl}
       varying vec2 vUv;
-      float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
+
+      float hash(vec2 p){
+        return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453);
+      }
+
       void main(){
         ${mainBody}
         gl_FragColor = vec4(color,1.0);
       }
     `
+
     mat.needsUpdate = true
   }, [rebuildKey, texture])
 
-  // --- обновляем значения uniform при изменении stack ---
   useEffect(() => {
     const mat = materialRef.current
     if (!mat || !mat.uniforms) return
@@ -129,7 +131,10 @@ export default function ShaderQuad({ stack }: { stack: EffectInstance[] }) {
         ref={materialRef}
         vertexShader={`
           varying vec2 vUv;
-          void main(){ vUv = uv; gl_Position = vec4(position,1.0); }
+          void main(){
+            vUv = uv;
+            gl_Position = vec4(position,1.0);
+          }
         `}
         uniforms={baseUniforms}
       />

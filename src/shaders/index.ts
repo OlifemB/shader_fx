@@ -1,3 +1,4 @@
+// src/shaders/index.ts
 import { ART } from '@/shaders/art.ts'
 import { COLOR } from '@/shaders/color.ts'
 import { DISTORT } from '@/shaders/distort.ts'

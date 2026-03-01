@@ -1,3 +1,4 @@
+// src/components/panel/stack.tsx
 import { type JSX } from 'react'
 import type { EffectInstance } from '@/components/shader.tsx'
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core'
